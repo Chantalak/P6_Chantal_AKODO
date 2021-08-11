@@ -1,6 +1,14 @@
 //fichier qui contient notre application 
 //importation d'express
 const express = require('express');
+//importation mongoose
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://Chantal1:9536731@cluster.ats0o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 //application express
 const app = express();
