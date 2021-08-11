@@ -4,6 +4,9 @@ const express = require('express');
 //importation mongoose
 const mongoose = require('mongoose');
 
+//enregistrement router dans application
+const userRoutes = require('./routes/user');
+
 mongoose.connect('mongodb+srv://Chantal1:9536731@cluster.ats0o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -64,6 +67,9 @@ app.use('/api/sauces', (req, res, next) => {
     ];
     res.status(200).json(sauce);
 });
+
+//enregistrement des routes 
+app.use('/api/auth', userRoutes);
 
 //exportation application
 module.exports = app;
