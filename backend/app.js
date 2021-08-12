@@ -3,8 +3,10 @@
 const express = require('express');
 //importation mongoose
 const mongoose = require('mongoose');
+const path = require('path');
 
 //enregistrement router dans application
+const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 mongoose.connect('mongodb+srv://Chantal1:9536731@cluster.ats0o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
@@ -27,48 +29,11 @@ app.use((req, res, next) => {
 //obsolescence bodyparser 
 app.use(express.json());
 
-app.post ('/api/sauces', (req, res, next) => {
-    console.log(req.body);
-    res.status(201).json({
-        message: 'Objet créé !'
-    });
-});
-
-app.use('/api/sauces', (req, res, next) => {
-    const sauce = [
-        {
-            _Id : 'ncncnzdnd',
-            name: 'nom de la sauce',
-            manufacturer: 'fabricant de la sauce',
-            description : 'description de la sauce',
-            mainPepper : 'principal ingrédient épicé de la sauce',
-            imageUrl : 'https://cdn.shoplightspeed.com/shops/638577/files/25050471/chuck-hughes-sauce-piquante.jpg',
-            heat : '1',
-            likes : '70',
-            dislikes : '20',
-            usersLiked : "String <userId>",
-            usersDisliked : "String <userId>",
-            userID : 'rooooooooo',
-        },
-        {
-            _Id : 'ncncnzdnd',
-            name: 'nom de la sauce',
-            manufacturer: 'fabricant de la sauce',
-            description : 'description de la sauce',
-            mainPepper : 'principal ingrédient épicé de la sauce',
-            imageUrl : 'https://cdn.shoplightspeed.com/shops/638577/files/25050471/chuck-hughes-sauce-piquante.jpg',
-            heat : '1',
-            likes : '70',
-            dislikes : '20',
-            usersLiked : "String <userId>",
-            usersDisliked : "String <userId>",
-            userID : 'rooooooooo',
-        },
-    ];
-    res.status(200).json(sauce);
-});
+//middleware qui gère image 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //enregistrement des routes 
+app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
 //exportation application
