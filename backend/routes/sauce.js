@@ -17,6 +17,8 @@ router.get('/:id', auth, sauceCtrl.getOneSauce);
 router.put('/:id', auth, multer, sauceCtrl.modifySauce);
 //supprimer une sauce
 router.delete('/:id', auth, sauceCtrl.deleteSauce);
+//scénarios de la fonction like
+router.post('/:id/like', auth, sauceCtrl.rateSauce);
 
 //exporte router du fichier
 module.exports = router;
