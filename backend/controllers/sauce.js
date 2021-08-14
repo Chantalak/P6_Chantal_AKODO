@@ -8,9 +8,9 @@ exports.createSauce = (req, res, next) => {
     const sauce = new Sauce({
         ...sauceObject,
         likes: 0,
-        dislike: 0,
-        usersLiked: [],
-        usersDisliked: [],
+        dislikes: 0,
+        usersLikes: [],
+        usersDislikes: [],
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
     sauce.save().then(
@@ -83,5 +83,14 @@ exports.getAllSauce = (req, res, next) => {
 };
 
 exports.rateSauce = (req, res, next) => {
-    
+    //cas 1 : on aime la sauce
+    if (req.body.like === 1 ) {
+        Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: req.body.like++ }, $push: { usersLikes: req.body.userId } })
+            .then(() => res.status(200).json({ message: 'Aime la sauce'}))
+            .catch(error => res.status(400).json({ error }));
+    } else if (req.body.like === -1 ) {
+        Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: req.body.like-- }, $push: { usersDislikes: req.body.userId } })
+            .then(() => res.status(200).json({ message: 'Aime pas sauce'}))
+            .catch(error => res.status(400).json({ error }));
+    } 
 }
