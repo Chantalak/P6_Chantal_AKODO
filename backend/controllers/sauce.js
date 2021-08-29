@@ -84,13 +84,30 @@ exports.getAllSauce = (req, res, next) => {
 
 exports.rateSauce = (req, res, next) => {
     //cas 1 : on aime la sauce
-    if (req.body.like === 1 ) {
-        Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: req.body.like++ }, $push: { usersLikes: req.body.userId } })
+    if ( req.body.like === 1 ) {
+        Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: req.body.like }, $push: { usersLikes: req.body.userId } })
             .then(() => res.status(200).json({ message: 'Aime la sauce'}))
             .catch(error => res.status(400).json({ error }));
-    } else if (req.body.like === -1 ) {
-        Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: req.body.like-- }, $push: { usersDislikes: req.body.userId } })
-            .then(() => res.status(200).json({ message: 'Aime pas sauce'}))
+    //cas 2 : aime pas la sauce 
+    } else if ( req.body.like === -1 ) {
+        Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: req.body.like }, $push: { usersDislikes: req.body.userId } })
+            .then(() => res.status(200).json({ message: 'Aime pas la sauce'}))
             .catch(error => res.status(400).json({ error }));
-    } 
+    //cas 3 : retire son j'aime ou j'aime pas
+    } else {
+        Sauce.findOne({ _id: req.params.id })
+            .then(sauce => {
+                if (req.body.like === 0) {
+                    Sauce.updateOne({ _id: req.params.id }, { $inc: { likes : req.body.like-- }, $push: { usersDislikes: req.body.userId } })
+                        .then(() => res.status(200).json({ message: 'Aime pas la sauce'}))
+                        .catch(error => res.status(400).json({ error }));
+                } else {
+                    Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: req.body.like++ }, $push: { usersDislikes: req.body.userId } })
+                        .then(() => res.status(200).json({ message: 'Aime pas la sauce'}))
+                        .catch(error => res.status(400).json({ error }));
+                        console.log(dislikes)
+                }
+            })
+            .catch(error => res.status(400).json({ error }));
+    }
 }
