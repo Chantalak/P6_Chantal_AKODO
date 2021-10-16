@@ -1,12 +1,18 @@
 //importation du modèle créé
 const Sauce = require('../models/Sauce');
 const fs = require('fs');
+const xss = require('xss')
 
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
     const sauce = new Sauce({
-        ...sauceObject,
+        userId: xss(sauceObject.userId),
+        name: xss(sauceObject.name),
+        manufacturer: xss(sauceObject.manufacturer),
+        description: xss(sauceObject.description),
+        mainPepper: xss(sauceObject.mainPepper),
+        heat : sauceObject.heat,
         likes: 0,
         dislikes: 0,
         usersLiked: [],

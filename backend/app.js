@@ -4,6 +4,10 @@ const express = require('express');
 //importation mongoose
 const mongoose = require('mongoose');
 const path = require('path');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
+const rateLimit = require("./middleware/rateLimit");
+require('dotenv').config();
 
 //enregistrement router dans application
 const sauceRoutes = require('./routes/sauce');
@@ -17,6 +21,16 @@ mongoose.connect('mongodb+srv://Chantal1:9536731@cluster.ats0o.mongodb.net/myFir
 
 //application express
 const app = express();
+
+app.use(rateLimit);  //  Empêcher les attaques brutes (rateLimit)
+app.use(helmet()); // identifier les éléments protèger par helmet
+app.use(helmet.noSniff()); //  Empêcher le navigateur de contourner l'entête Content-Type
+app.use(helmet.hidePoweredBy()); // Cacher le powered by Express dans chaque entête de requête
+app.use(helmet.ieNoOpen()); // Empêcher IE d'éxécuter des téléchargements provenant de page potentiellement malveillante
+app.use(helmet.frameguard({ action: 'deny' })); // Empêche le click jacking  
+app.use(helmet.xssFilter({})); //  Prévenir les attaques xss
+
+app.use(bodyParser.json()); // Permet Extraire le format JSON de nos requêtes 
 
 //middleware général appliquer à toutes les requetes envoyées serveurs
 app.use((req, res, next) => {
