@@ -5,9 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const helmet = require('helmet');
-const bodyParser = require('body-parser');
 const rateLimit = require("./middleware/rateLimit");
-require('dotenv').config();
 
 //enregistrement router dans application
 const sauceRoutes = require('./routes/sauce');
@@ -29,8 +27,6 @@ app.use(helmet.hidePoweredBy()); // Cacher le powered by Express dans chaque ent
 app.use(helmet.ieNoOpen()); // Empêcher IE d'éxécuter des téléchargements provenant de page potentiellement malveillante
 app.use(helmet.frameguard({ action: 'deny' })); // Empêche le click jacking  
 app.use(helmet.xssFilter({})); //  Prévenir les attaques xss
-
-app.use(bodyParser.json()); // Permet Extraire le format JSON de nos requêtes 
 
 //middleware général appliquer à toutes les requetes envoyées serveurs
 app.use((req, res, next) => {
