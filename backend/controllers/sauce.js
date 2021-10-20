@@ -1,6 +1,8 @@
 //importation du modèle créé
 const Sauce = require('../models/Sauce');
+//importation file system 
 const fs = require('fs');
+//importation cross site scripting
 const xss = require('xss')
 
 exports.createSauce = (req, res, next) => {
@@ -22,7 +24,7 @@ exports.createSauce = (req, res, next) => {
     sauce.save().then(
         () => { 
             res.status(201).json({ 
-                message: 'Objet enregistré !'
+                message: 'La Sauce a été enregistré !'
             });
         }
     ).catch(
@@ -57,7 +59,7 @@ exports.modifySauce = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         } : { ...req.body };
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+        .then(() => res.status(200).json({ message: 'La Sauce a été modifié !'}))
         .catch(error => res.status(400).json({ error }));
 };
 
@@ -67,7 +69,7 @@ exports.deleteSauce = (req, res, next) => {
         const filename = sauce.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {
             Sauce.deleteOne({ _id: req.params.id })
-            .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+            .then(() => res.status(200).json({ message: 'La Sauce a été supprimé !'}))
             .catch(error => res.status(400).json({ error }));
         });
     })
@@ -92,12 +94,12 @@ exports.rateSauce = (req, res, next) => {
     //cas 1 : on aime la sauce
     if ( req.body.like === 1 ) {
         Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: +1 }, $push: { usersLiked: req.body.userId } })
-            .then(() => res.status(200).json({ message: 'Aime la sauce'}))
+            .then(() => res.status(200).json({ message: 'Utilisateur a liké une sauce'}))
             .catch(error => res.status(400).json({ error }));
     //cas 2 : aime pas la sauce 
     } else if ( req.body.like === -1 ) {
         Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: +1 }, $push: { usersDisliked: req.body.userId } })
-            .then(() => res.status(200).json({ message: 'Aime pas la sauce'}))
+            .then(() => res.status(200).json({ message: 'Utilisateur a disliké une sauce'}))
             .catch(error => res.status(400).json({ error }));
     //cas 3 : retire son j'aime ou j'aime pas
     } else {
@@ -105,11 +107,11 @@ exports.rateSauce = (req, res, next) => {
             .then(sauce => {
                 if (sauce.usersLiked.includes(req.body.userId)) {
                     Sauce.updateOne({ _id: req.params.id }, { $inc: { likes : -1 }, $pull: { usersDislikes: req.body.userId } })
-                        .then(() => res.status(200).json({ message: 'Annule aime la sauce'}))
+                        .then(() => res.status(200).json({ message: 'Annule son like'}))
                         .catch(error => res.status(400).json({ error }));
                 } else if (sauce.usersDisliked.includes(req.body.userId)) {
                     Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: -1 }, $pull: { usersDislikes: req.body.userId } })
-                        .then(() => res.status(200).json({ message: 'Annule aime pas la sauce'}))
+                        .then(() => res.status(200).json({ message: 'Annule son dislike'}))
                         .catch(error => res.status(400).json({ error }));
                 }
             })

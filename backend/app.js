@@ -1,9 +1,13 @@
 //fichier qui contient notre application 
 //importation d'express
 const express = require('express');
+//importation de cors
+const cors = require('cors');
 //importation mongoose
 const mongoose = require('mongoose');
+//importation pour accéder path serveur
 const path = require('path');
+//importation helmet
 const helmet = require('helmet');
 const rateLimit = require("./middleware/rateLimit");
 
@@ -20,13 +24,13 @@ mongoose.connect('mongodb+srv://Chantal1:9536731@cluster.ats0o.mongodb.net/myFir
 //application express
 const app = express();
 
-app.use(rateLimit);  //  Empêcher les attaques brutes (rateLimit)
-app.use(helmet()); // identifier les éléments protèger par helmet
-app.use(helmet.noSniff()); //  Empêcher le navigateur de contourner l'entête Content-Type
-app.use(helmet.hidePoweredBy()); // Cacher le powered by Express dans chaque entête de requête
-app.use(helmet.ieNoOpen()); // Empêcher IE d'éxécuter des téléchargements provenant de page potentiellement malveillante
-app.use(helmet.frameguard({ action: 'deny' })); // Empêche le click jacking  
-app.use(helmet.xssFilter({})); //  Prévenir les attaques xss
+app.use(rateLimit);  //empêcher les attaques brutes (rateLimit)
+app.use(helmet()); //identifier les éléments protèger par helmet
+app.use(helmet.noSniff()); //empêcher le navigateur de contourner l'entête Content-Type
+app.use(helmet.hidePoweredBy()); //cacher le powered by Express dans chaque entête de requête
+app.use(helmet.ieNoOpen()); //empêcher IE d'éxécuter des téléchargements provenant de page potentiellement malveillante
+app.use(helmet.frameguard({ action: 'deny' })); //empêche le click jacking  
+app.use(helmet.xssFilter({})); //prévenir les attaques xss
 
 //middleware général appliquer à toutes les requetes envoyées serveurs
 app.use((req, res, next) => {
@@ -35,6 +39,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
+app.use(cors())
 
 //obsolescence bodyparser 
 app.use(express.json());

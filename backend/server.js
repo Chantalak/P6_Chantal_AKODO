@@ -4,6 +4,8 @@
 const http = require('http');
 //importation app.js
 const app = require('./app');
+const cors = require('cors');
+
 
 //appelle méthode createServer du package http
 //prend comme argument fonction appelée à requete reçu par server
