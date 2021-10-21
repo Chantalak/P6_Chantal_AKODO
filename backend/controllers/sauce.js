@@ -106,11 +106,11 @@ exports.rateSauce = (req, res, next) => {
         Sauce.findOne({ _id: req.params.id })
             .then(sauce => {
                 if (sauce.usersLiked.includes(req.body.userId)) {
-                    Sauce.updateOne({ _id: req.params.id }, { $inc: { likes : -1 }, $pull: { usersDislikes: req.body.userId } })
+                    Sauce.updateOne({ _id: req.params.id }, { $inc: { likes : -1 }, $pull: { usersLiked: req.body.userId } })
                         .then(() => res.status(200).json({ message: 'Annule son like'}))
                         .catch(error => res.status(400).json({ error }));
                 } else if (sauce.usersDisliked.includes(req.body.userId)) {
-                    Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: -1 }, $pull: { usersDislikes: req.body.userId } })
+                    Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: -1 }, $pull: { usersDisliked: req.body.userId } })
                         .then(() => res.status(200).json({ message: 'Annule son dislike'}))
                         .catch(error => res.status(400).json({ error }));
                 }
